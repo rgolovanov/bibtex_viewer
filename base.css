@@ -1,0 +1,25 @@
+body {
+    margin:0 auto;
+    width:80%;
+    max-width:750px;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+ div, p {
+    width:100%;
+}
+ h1,h2,h3 {
+    width:100%;
+    text-align:center;
+}
+ input {
+    width:100%;
+}
+ div.out {
+    overflow-x:auto;
+    white-space:pre-wrap;
+}
+ fieldset {
+    border:0 none transparent;
+    padding-left:0;
+    display:inline-block;
+}

@@ -2,12 +2,13 @@ var Cite = require('citation-js')
 
 // jQuery elements for Cite
 class CiteControls {
-	constructor(bibx_in, type, style, lang, bibx_out) {
+	constructor(bibx_in, type, style, lang, bibx_out, bibx_stat) {
 		this.$bibx_in = bibx_in;
 		this.$type = type;
 		this.$styl = style;
 		this.$lang = lang;
 		this.$bibx_out = bibx_out;
+		this.$bibx_stat = bibx_stat;
 	}
 };
 
@@ -57,14 +58,17 @@ function update_output() {
 	}
 
 	// Make a factory for callback
-	var callbackFactory = function (out) {
+	var callbackFactory = function (out, stat) {
 	  return function (data) {
-	    out.html(cite.set(data).get(opt))
+	  	cite.set(data);
+	    out.html(cite.get(opt))
+
+	    var stat = new BibStatistic(JSON.parse(cite.get({format:'json'})));
 	  }
 	}
 
 	// Callbacks
-	var bibxCb = callbackFactory(ctrls.$bibx_out)
+	var bibxCb = callbackFactory(ctrls.$bibx_out, ctrls.$bibx_stat)
 
 	// Get user options
 	opt.type = ctrls.$type.val()
@@ -83,9 +87,9 @@ function update_output() {
 	Cite.parse.input.async.chain(ctrls.$bibx_in).then(bibxCb)
 };
 
-function init_bibtex_viewer(bibx_in, type, style, lang, bibx_out) {
+function init_bibtex_viewer(bibx_in, type, style, lang, bibx_out, bibx_stat) {
 
-	ctrls = new CiteControls(bibx_in, type, style, lang, bibx_out);
+	ctrls = new CiteControls(bibx_in, type, style, lang, bibx_out, bibx_stat);
 
 	// Register custom styles
 	async function custom_registrar(git_repo, custom_dict, cite_reg_func){

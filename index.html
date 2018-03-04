@@ -37,126 +37,29 @@
 			<option value="en-US">English</option>
       </select>
     </fieldset>
-
-    <div id="debugDiv" contenteditable="false"></div>
+    <h2>Filters:</h2>
+    <div id="filters" contenteditable="false">
+    	
+    </div>
 
     <h4>From BibTeX input:</h4>
     <div id="bibx-out" data-type="bib" class="out"></div>
     
     <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/larsgw/citation.js/archive/citation.js/citation-0.3.4.min.js"></script>
+    <script type="text/javascript" src="scripts/bibtex_viewer.js"></script>
+    <script type="text/javascript">
+    	init_bibtex_viewer(
+    		$('#bibx-in'),
+    		$('select.type'),
+    		$('select.style'),
+    		$('select.lang'),
+    		$('#bibx-out'));
 
-    <script class="code" type="text/javascript">
-
-// jQuery elements
-var $bibx_in = $('#bibx-in'),
-	$type = $('select.type'),
-	$styl = $('select.style'),
-	$lang = $('select.lang')
-
-// Parse URL arguments to set controls
-var url = new URL(window.location.href)
-if(arg = url.searchParams.get('github_url')) {
-	$bibx_in.val('https://raw.githubusercontent.com' + arg)
-}
-else if(arg = url.searchParams.get('url')) {
-	$bibx_in.val(arg)
-}
-if(arg = url.searchParams.get('type')) {
-	$type.val(arg)
-}
-if(arg = url.searchParams.get('style')) {
-	$type.val(arg)
-}
-if(arg = url.searchParams.get('lang')) {
-	$lang.val(arg)
-}
-
-// Prepare url according to control's values
-function cook_url() {
-	var newUrl = url.origin + url.pathname
-	newUrl += '?'
-	var bib_url = new URL($bibx_in.val())
-	newUrl += (bib_url.origin.search('raw.githubusercontent.com') != -1 ?
-		'github_url=' + bib_url.pathname :
-		'url=' + bib_url.href);
-	newUrl += '&type=' + $type.val();
-	newUrl += '&styl=' + $styl.val();
-	newUrl += '&lang=' + $lang.val();
-	return newUrl;
-}
-
-var Cite = require('citation-js')
-
-// Register custom styles
-async function custom_register(git_repo, custom_dict, cite_reg_func){
-	for (var key in custom_dict) {
-		if(custom_dict.hasOwnProperty(key)) {
-			await $.get(git_repo + custom_dict[key], function (response) {
-				cite_reg_func(key, response);
-				console.log('Register ' + key)
-			});
-		}
-	}
-}
-
-cite_github = 'https://raw.githubusercontent.com/citation-style-language/'
-Promise.all([custom_register(cite_github + 'styles/master/',
-					{'gost' : 'gost-r-7-0-5-2008.csl'},
-					 Cite.CSL.register.addTemplate),
-			 custom_register(cite_github + 'locales/master/',
-					{'ru-RU' : 'locales-ru-RU.xml'},
-					 Cite.CSL.register.addLocale)])
-.then(function() {
-	console.log('Create cite')
-	// Set variables
-	var cite = new Cite()
-	var opt = {
-	  format: 'string'
-	}
-
-	// Make shorter ref to function
-	var parseAsync = Cite.parse.input.async.chain
-
-	// Make a factory for callback
-	var callbackFactory = function (out) {
-	  return function (data) {
-	    out.html(cite.set(data).get(opt))
-	  }
-	}
-
-	$(function(){
-
-	  // Callbacks
-	  var bibxCb = callbackFactory($('#bibx-out'))
-	  
-	  // Declare function to update the output
-	  function update() {
-	    // Get user options
-	    opt.type = $type.val()
-	    opt.style = $styl.val()
-	    opt.lang = $lang.val()
-
-	    if (history.pushState) {
-			window.history.pushState('<empty>', '<empty>', cook_url());
-		} else {
-			document.location.href = cook_url();
-		}
-	    
-	    // Set data (explicit parsing only recommended for async) and set html element to get output
-	    parseAsync($bibx_in).then(bibxCb)
-	  }
-	  
-	  // Make output update when input is defocussed...
-	  $('.in').on('blur', update)
-	  // ... or a select tag has changed
-	  $('select').on('change', update)
-	  
-	  // Trigger update
-	  update()
-	})
-})
-
-	</script>  
+		// Make output update when input is defocussed...
+		$('.in').on('blur', update_output)
+		// ... or a select tag has changed
+		$('select').on('change', update_output)
+    </script>
 </body>
 </html>

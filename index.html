@@ -1,47 +1,43 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Online BibTex Viewer</title>
-		<link rel="stylesheet" type="text/css" href="./base.css">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Online BibTex Viewer</title>
+    <link rel="stylesheet" type="text/css" href="./base.css">
   </head>
   <body>
-    <h1>Online BibTex Viewer</h1>
-    <h2>Input:</h2>
+    <div id="debugDiv" contenteditable="false"></div>
+
+    <div id="bibx-out" data-type="bib" class="out"></div>
     <h4>BibTex URL:</h4>
     <input id="bibx-in" data-type="url" class="in bibtex" contenteditable="true" spellcheck="false"
     	value='https://raw.githubusercontent.com/rgolovanov/publications/master/golovanov.bib'/>    
     <h2>Output:</h2>
     <fieldset>
-		<legend>HTML or plain text:</legend>
-		<select class="type">
-			<option value="html">HTML</option>
-			<option value="json">JSON</option>
-			<option value="string">Plain text</option>
-		</select>
+    <legend>HTML or plain text:</legend>
+      <select class="type">
+        <option value="html">HTML</option>
+        <option value="json">JSON</option>
+        <option value="string">Plain text</option>
+      </select>
     </fieldset>
     <fieldset>
       <legend>Style:</legend>
-		<select class="style">
-			<option value="citation-gost">ГОСТ Р 7.0.5-2008</option>
-			<option value="citation-apa">APA</option>
-			<option value="csl">CSL-JSON</option>
-			<option value="bibtex">BibTeX</option>
-        	<option value="bibtxt">Bib.TXT</option>
-		</select>
+      <select class="style">
+        <option value="citation-gost">ГОСТ Р 7.0.5-2008</option>
+        <option value="citation-apa">APA</option>
+        <option value="csl">CSL-JSON</option>
+        <option value="bibtex">BibTeX</option>
+        <option value="bibtxt">Bib.TXT</option>
+      </select>
     </fieldset>
     <fieldset>
       <legend>Language:</legend>
       <select class="lang">      	
-      		<option value="ru-RU">Русский</option>
-			<option value="en-US">English</option>
+          <option value="ru-RU">Русский</option>
+          <option value="en-US">English</option>
       </select>
     </fieldset>
-
-    <div id="debugDiv" contenteditable="false"></div>
-
-    <h4>From BibTeX input:</h4>
-    <div id="bibx-out" data-type="bib" class="out"></div>
     
     <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/larsgw/citation.js/archive/citation.js/citation-0.3.4.min.js"></script>
